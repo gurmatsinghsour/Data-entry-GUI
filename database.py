@@ -5,6 +5,14 @@ from tkinter import *
 
 
 #backend
+
+
+
+
+
+    
+
+
 def Delete(event):
     e1.delete(0, END)
     e2.delete(0, END)
@@ -17,6 +25,20 @@ def Delete(event):
     e2.insert(9, select['Name'])
     e3.insert(9, select['NutritionalDefficiency'])
     e4.insert(9, select['Age'])
+
+def deleteTab():
+    deleteWindow = Toplevel(root)
+    deleteWindow.title("Delete Operation")
+    deleteWindow.geometry("400x400")
+    deleteWindow.resizable(False, False)
+    
+    Label(deleteWindow, text = "Please enter the following details to delete the data").place()
+
+    Label(deleteWindow, text="Patient ID: ")
+
+    e1 = Entry(deleteWindow)
+    Button(root, text="Delete", command = delete, height=3, width=13).place(x=250, y=130)
+    listBox.bind('<Double-Button-1>', Delete)
 
 
 
@@ -106,12 +128,13 @@ def delete():
 def show():
     mysqldb = mysql.connector.connect(host='localhost', user = 'root', password='', database='pbl')
     mycursor=mysqldb.cursor()
-    mycursor.execute("SELECT PatientId, Name, NutritionalDefficiency, Age FROM NutritionalSecurity")
+    mycursor.execute("SELECT PatientId, Name, NutritionalDefficiency, Age FROM nutritionalsecurity")
     records = mycursor.fetchall()
     print(records)
 
     for i, (id, stname, course, fee) in enumerate(records, start=1):
         listBox.insert("", "end", values=(id, stname, course, fee))
+        mysqldb.close()
 
 #  GUI
 
@@ -144,7 +167,7 @@ e4.place(x=150, y=100)
 
 Button(root, text="Add", command = Add, height=3, width=13).place(x=30, y=130)
 Button(root, text="Update", command = update, height=3, width=13).place(x=140, y=130)
-Button(root, text="Delete", command = delete, height=3, width=13).place(x=250, y=130)
+Button(root, text="Delete", command = deleteTab, height=3, width=13).place(x=250, y=130)
 
 cols = ('PatientId', 'Name', 'NutritionalDefficiency', 'Age')
 listBox = ttk.Treeview(root, columns=cols, show='headings')
@@ -155,7 +178,7 @@ for col in cols:
     listBox.place(x = 10, y=200)
 
 show()
-listBox.bind('<Double-Button-1>', Delete)
+# listBox.bind('<Double-Button-1>', Delete)
 
 if __name__ == "__main__":
     root.mainloop()

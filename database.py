@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from tkinter import *
 import mysql.connector
-from mysql  import *
+from tkinter import *
+
 
 
 def Delete(event):
@@ -24,7 +24,7 @@ def Add():
     patientId = e1.get()
     patientName = e2.get() 
     nutrition = e3.get()
-    fee = e4.get
+    fee = e4.get()
 
 
     mysqldb = mysql.connector.connect(host='localhost', user = 'root', password='', database='pbl')
@@ -39,8 +39,8 @@ def Add():
         messagebox.showinfo("information", "Record inserted sucessfully....")
         e1.delete(0, END)
         e2.delete(0, END)
-        e2.delete(0, END)
         e3.delete(0, END)
+        e4.delete(0, END)
         e1.focus_set()
 
     except Exception as e:
@@ -67,8 +67,8 @@ def update():
 
         e1.delete(0, END)
         e2.delete(0, END)
-        e2.delete(0, END)
         e3.delete(0, END)
+        e4.delete(0, END)
         e1.focus_set()
     
     except Exception as e:
@@ -93,8 +93,8 @@ def delete():
 
         e1.delete(0, END)
         e2.delete(0, END)
-        e2.delete(0, END)
         e3.delete(0, END)
+        e4.delete(0, END)
         e1.focus_set()
     
     except Exception as e:

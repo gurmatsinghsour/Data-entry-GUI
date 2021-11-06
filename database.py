@@ -4,7 +4,7 @@ import mysql.connector
 from tkinter import *
 
 
-
+#backend
 def Delete(event):
     e1.delete(0, END)
     e2.delete(0, END)

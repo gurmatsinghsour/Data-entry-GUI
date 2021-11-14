@@ -1,15 +1,17 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from tkinter import *
 import mysql.connector
-from mysql  import *
+from tkinter import *
 
+
+#backend
 
 def Delete(event):
     e1.delete(0, END)
     e2.delete(0, END)
     e3.delete(0, END)
     e4.delete(0, END)
+    e5.delete(0, END)
 
     row_id = listBox.selection()[0]
     select = listBox.set(row_id)
@@ -17,6 +19,7 @@ def Delete(event):
     e2.insert(9, select['Name'])
     e3.insert(9, select['NutritionalDefficiency'])
     e4.insert(9, select['Age'])
+    e5.insert(9, select['Gender'])
 
 
 
@@ -24,23 +27,25 @@ def Add():
     patientId = e1.get()
     patientName = e2.get() 
     nutrition = e3.get()
-    fee = e4.get
+    age = e4.get()
+    gen = e5.get()
 
 
     mysqldb = mysql.connector.connect(host='localhost', user = 'root', password='', database='pbl')
     mycursor=mysqldb.cursor()
 
     try:
-        sql = "INSERT INTO nutritionalsecurity (PatientId, Name, NutritionalDefficiency, Age) VALUES (%s, %s, %s, %s)"
-        val = (patientId, patientName, nutrition, fee)
+        sql = "INSERT INTO nutritionalsecurity (PatientId, Name, NutritionalDefficiency, Age, Gender) VALUES (%s, %s, %s, %s, %s)"
+        val = (patientId, patientName, nutrition, age, gen)
         mycursor.execute(sql, val)
         mysqldb.commit()
         lastid = mycursor.lastrowid
         messagebox.showinfo("information", "Record inserted sucessfully....")
         e1.delete(0, END)
         e2.delete(0, END)
-        e2.delete(0, END)
         e3.delete(0, END)
+        e4.delete(0, END)
+        e5.delete(0, END)
         e1.focus_set()
 
     except Exception as e:
@@ -54,12 +59,14 @@ def update():
     patientName = e2.get()
     nutrition = e3.get()
     age = e4.get()
+    gen = e5.get()
+
     mysqldb = mysql.connector.connect(host='localhost', user = 'root', password='', database='pbl')
     mycursor=mysqldb.cursor()
 
     try:
-        sql = "Update nutritionalsecurity set Name = %s, NutritionalDefficiency = %s, Age = %s where PatientId = %s"
-        val = (patientName, nutrition, age, patientId)
+        sql = "Update nutritionalsecurity set Name = %s, NutritionalDefficiency = %s, Age = %s, Gender = %s where PatientId = %s"
+        val = (patientName, nutrition, age, gen, patientId)
         mycursor.execute(sql, val)
         mysqldb.commit()
         lastid = mycursor.lastrowid
@@ -67,8 +74,8 @@ def update():
 
         e1.delete(0, END)
         e2.delete(0, END)
-        e2.delete(0, END)
         e3.delete(0, END)
+        e4.delete(0, END)
         e1.focus_set()
     
     except Exception as e:
@@ -93,8 +100,9 @@ def delete():
 
         e1.delete(0, END)
         e2.delete(0, END)
-        e2.delete(0, END)
         e3.delete(0, END)
+        e4.delete(0, END)
+        e5.delete(0, END)
         e1.focus_set()
     
     except Exception as e:
@@ -106,17 +114,18 @@ def delete():
 def show():
     mysqldb = mysql.connector.connect(host='localhost', user = 'root', password='', database='pbl')
     mycursor=mysqldb.cursor()
-    mycursor.execute("SELECT PatientId, Name, NutritionalDefficiency, Age FROM NutritionalSecurity")
+    mycursor.execute("SELECT PatientId, Name, NutritionalDefficiency, Age, Gender FROM nutritionalsecurity")
     records = mycursor.fetchall()
     print(records)
 
-    for i, (id, stname, course, fee) in enumerate(records, start=1):
-        listBox.insert("", "end", values=(id, stname, course, fee))
+    for i, (id, stname, course, fee, gen) in enumerate(records, start=1):
+        listBox.insert("", "end", values=(id, stname, course, fee, gen))
+        mysqldb.close()
 
 #  GUI
 
 root = Tk()
-root.geometry("825x500")
+root.geometry("1025x500")
 root.resizable(False, False)
 root.config(bg="lightgreen")
 global e1
@@ -128,6 +137,7 @@ Label(root, text="Patient ID: ").place(x=10, y=10)
 Label(root, text="Name: ").place(x=10, y=40)
 Label(root, text="Nutritional Defficiency: ").place(x=10, y=70)
 Label(root, text="Age: ").place(x=10, y=100)
+Label(root, text="Gender: ").place(x=10, y=130)
 
 e1 = Entry(root)
 e1.place(x=150, y=10)    
@@ -142,17 +152,28 @@ e3.place(x=150, y=70)
 e4 = Entry(root)
 e4.place(x=150, y=100)
 
-Button(root, text="Add", command = Add, height=3, width=13).place(x=30, y=130)
-Button(root, text="Update", command = update, height=3, width=13).place(x=140, y=130)
-Button(root, text="Delete", command = delete, height=3, width=13).place(x=250, y=130)
+e5 = Entry(root)
+e5.place(x=150, y=130)
 
-cols = ('PatientId', 'Name', 'NutritionalDefficiency', 'Age')
+Button(root, text="Add", command = Add, height=3, width=13).place(x=30, y=160)
+Button(root, text="Update", command = update, height=3, width=13).place(x=140, y=160)
+Button(root, text="Delete", command = delete, height=3, width=13).place(x=250, y=160)
+
+# scrollbar = Scrollbar(root)
+# scrollbar.pack(side = BOTTOM, fill = BOTH)
+
+
+cols = ('PatientId', 'Name', 'NutritionalDefficiency', 'Age','Gender',)
 listBox = ttk.Treeview(root, columns=cols, show='headings')
 
 for col in cols:
     listBox.heading(col, text=col)
     listBox.grid(row=1, column = 0, columnspan = 2)
-    listBox.place(x = 10, y=200)
+    listBox.place(x = 10, y=230)
+    # listBox.config(xscrollcommand = scrollbar.set)
+    
+
+
 
 show()
 listBox.bind('<Double-Button-1>', Delete)
